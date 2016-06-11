@@ -6,8 +6,10 @@ public class title : MonoBehaviour {
 	//Title will be assigned to the player in the player class
 
 	string currentTitle;
-	string [] name = new string[100]{}; 
-	string [] description = new string[100]{};
+	string [] name = new string[100]{"Scallywag"}; 
+	string [] description = new string[100]{""};
+
+
 
 	// Use this for initialization
 	void Start () {

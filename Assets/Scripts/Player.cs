@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player : MonoBehaviour {
@@ -6,9 +7,11 @@ public class Player : MonoBehaviour {
 	public int health = 100;
 	public int armour = 0;
 	public float balance = 0f;
-	public float level = 1;
+	public float level = 0;
 	public float experiencePoints = 1f;
 	public float xpRequirement = 1f;
+	public float timeLeft = 30f;
+
 
 	private Crew crew;
 	private ShipsRoster shipsRoster;
@@ -30,21 +33,25 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		xpRequirement = level * 1000;
-		
+		if (level == 0) {
+			xpRequirement = 500;
+		} else {
+			xpRequirement = level * 1000;
+		}
+			
 		//on player's death
-		checkDeath ();
+		if (health < 1 && armour < 1) {
+			DEATH ();
+		}
 
 		if (experiencePoints == xpRequirement) {
 			LEVELUP ();
 		}
 	}
 
-	void checkDeath(){
-		if (health < 1 && armour < 1) {
-			DEATH ();
-		}
-	}
+	/*-=-=-=-=-=-=-=-=-=-=-=
+	 END OF UPDATE FUNCTION
+	-=-=-=-=-=-=-=-=-=-=-= */
 
 	void DEATH () {
 		Debug.Log ("player has died");
@@ -60,7 +67,7 @@ public class Player : MonoBehaviour {
 	void LEVELUP (){
 		Debug.Log ("Player has leveled up to level " + level);
 		level++;
-		//TODO play sound
+		//TODO play sound and show text on screen
 	}
 
 }

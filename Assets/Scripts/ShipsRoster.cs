@@ -23,7 +23,7 @@ public class ShipsRoster : MonoBehaviour {
 	}
 
 	public void lossOfShip () {
-		
+		numberOfShips = numberOfShips - 1;
 	}
 
 
