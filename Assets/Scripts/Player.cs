@@ -2,72 +2,85 @@
 using UnityEngine.UI;
 using System.Collections;
 
+
 public class Player : MonoBehaviour {
 
-	public int health = 100;
-	public int armour = 0;
+	public string characterName = "";
+
+	public bool firstBoot = false;
+
 	public float balance = 0f;
-	public float level = 0;
-	public float experiencePoints = 1f;
-	public float xpRequirement = 1f;
-	public float timeLeft = 30f;
+	public float experiencePoints = 0f;
+	public float health = 1000f;
+	public float armour = 0f;
+	public float earningsPerTerm = 0.005f; //Term duration TBD
+	public float level = 0f;
+	public float xpReq;
+	public float totalxp = 0;
+	public float saveOfEPT;
 
 
-	private Crew crew;
-	private ShipsRoster shipsRoster;
 
 
 
-	//Runs before Start () function
-	void Awake (){
-	
-		//TODO add the loading of a players stats
-	}
+	//Test Variables
+	public float xpTestEarnings = 1;
+
+		private HUD hud;
 
 	// Use this for initialization
 	void Start () {
-		crew = GetComponent<Crew> ();
-		shipsRoster = GetComponent<ShipsRoster> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
 
-		if (level == 0) {
-			xpRequirement = 500;
-		} else {
-			xpRequirement = level * 1000;
-		}
-			
-		//on player's death
-		if (health < 1 && armour < 1) {
-			DEATH ();
+		hud = GetComponent<HUD> ();
+
+		if (level == 0f) {
+			xpReq = 500f;
 		}
 
-		if (experiencePoints == xpRequirement) {
-			LEVELUP ();
+		if (level > 0){
+			xpReq = level * 1000f;
 		}
+
+		if (firstBoot == true) {
+			//ask player to define 'name' and go to character creation scene
+		}
+
 	}
 
-	/*-=-=-=-=-=-=-=-=-=-=-=
-	 END OF UPDATE FUNCTION
-	-=-=-=-=-=-=-=-=-=-=-= */
+	void FixedUpdate () {
 
-	void DEATH () {
-		Debug.Log ("player has died");
-		//player looses 1/4 of their balance when they die (to pay the shaman to bring them back)
-		balance = balance * 0.75;
+		balance = balance + earningsPerTerm;
+		totalxp = totalxp + xpTestEarnings;
+		
+		if (health == 0f && armour == 0f) {
+			onDeath ();
+		}
+
+		if (totalxp == xpReq) {
+			onLevelUp ();
+		}
+
+
 	}
 
-	void afterDeathRestart(){
-		//player does not start with 100 health 
-		health = 75;
+	void onPayment() {
+		
 	}
 
-	void LEVELUP (){
-		Debug.Log ("Player has leveled up to level " + level);
-		level++;
-		//TODO play sound and show text on screen
+	void onLevelUp(){
+		level = level + 1;
+		xpReq = level * 1000f;
 	}
 
+	void onDeath() {
+		saveOfEPT = earningsPerTerm;
+		//earningsPerTerm = 0f;
+		hud.alertText.text = "YOU ARE DEAD.";
+		Time.timeScale = 0;
+	}
+
+	void onRestart () {
+		//TODO set perameters for the game restarting
+		Time.timeScale = 1;
+	}
 }

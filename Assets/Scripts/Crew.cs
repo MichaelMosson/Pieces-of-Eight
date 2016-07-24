@@ -3,114 +3,93 @@ using System.Collections;
 
 public class Crew : MonoBehaviour {
 
-
-	int crewHappieness = 100;
-	int crewRoster = 1;//Player is counted in crewRoster too
-
-	//TODO load stats
-
 	private Player player;
-	private ShipsRoster shipsRoster;
+
+	public int numberOfCrew;
+	public int Happieness;
+
+	public float desiredCut;
+	public float actualCut;
+
+	public int playerMutanyNumber;
 
 	// Use this for initialization
 	void Start () {
 		player = GetComponent<Player> ();
-		shipsRoster = GetComponent<ShipsRoster> ();
+		Happieness = 100;
+		//Default cut and desired cut both 10% of player.balance
+		//actual cut can be changed by the player in menus
+		//desired cut may go up after a mutany
+		actualCut = player.balance / 10;
+		desiredCut = player.balance / 10;
+	
 	}
 	
 	// Update is called once per frame
-	void Update () {
-
-		if (crewHappieness < 55) {
-			int mutinyEventChance = Random.Range (0, 1000);
-			if (mutinyEventChance < 11) {
-				checkForMutiny ();
-			}
-			if (crewHappieness < 10) {
-				checkForMutiny ();
+	void FixedUpdate () {
+	
+		if (Happieness < 50) {
+			//Roll the dice
+			playerMutanyNumber = Random.Range(1,1000);
+			if (playerMutanyNumber > 500) {
+				checkForMutany ();
 			}
 		}
 
+		//Cap on desired cut so that player.balance is not completely eaten by desiredCut
+		if (desiredCut > 45) {
+			desiredCut = 45;
+		}
 	}
 
-	void checkForMutiny (){
+	//Occurs if crew.happieness < 50 to see if any of the crew carry out mutany
+	void checkForMutany (){
 
-		//random number to determine if a mutiny event takes place
-		int chanceOfMutiny = Random.Range (0, 100);
-		Debug.Log (chanceOfMutiny);
-
-		//low chance of mutiny
-		if (crewHappieness > 50) {
-			if (chanceOfMutiny < 10) {
-				MutinyEvent ();
-			}
-		} else if (crewHappieness < 50 && crewHappieness > 40) {
-			if (chanceOfMutiny < 30) {
-				MutinyEvent ();
-			}
-		} else if (crewHappieness < 40 && crewHappieness > 30) {
-			if (chanceOfMutiny < 50) {
-				MutinyEvent ();
-			}
-			if (chanceOfMutiny > 51) {
-				//TODO alert player that there is talk of mutiny
-			}
-		} else if (crewHappieness < 30 && crewHappieness > 20) {
-			if (chanceOfMutiny < 75) {
-				MutinyEvent ();
-			}
-		} else if (crewHappieness < 20 && crewHappieness > 15) {
-			if (chanceOfMutiny < 85) {
-				MutinyEvent ();
-			}
-		} else if (crewHappieness < 15) {
-			//1% chance of not 
-			if (chanceOfMutiny < 100) {
-				MutinyEvent ();
+		playerMutanyNumber = Random.Range (1, 1000);
+		//check for mutany
+		//<0.5% chance of mutany
+		if (Happieness < 50 && Happieness > 40){
+			if (playerMutanyNumber > 995) {
+				mutany ();
 			}
 		}
-
+		//1% chance of mutany
+		if (Happieness < 40 && Happieness > 30){
+			if (playerMutanyNumber > 990) {
+				mutany ();
+			}
+		}
+		//15% chance of mutany
+		if(Happieness < 30 && Happieness > 20){
+			if (playerMutanyNumber > 850) {
+				mutany ();
+			}
+		}
+		//25% chance if mutany
+		if(Happieness < 20 && Happieness > 10){
+			if (playerMutanyNumber > 750) {
+				mutany ();
+			}
+		}
+		//45% chance of mutany
+		if(Happieness < 10 && Happieness > 0){
+			if (playerMutanyNumber > 550) {
+				mutany ();
+			}
+		}
+		//60% chance of mutany
+		if (Happieness < 1) {
+			if (playerMutanyNumber > 400) {
+				mutany ();
+			}
+		}
 	}
 
-	void MutinyEvent(){
+	//Occurs if there is a mutany, function determines how bad the consiquenses are
+	void mutany (){
 		
-		Debug.Log ("Mutiny Event Active");
-		//Change scene to Mutiny 
-		//Player may loose ships, gold, and health as well as loosing some of the crew
-
-		int chanceOShipCaptured = Random.Range (0, 100);
-
-		//player can not loose their last ship
-		if (shipsRoster.numberOfShips < 2) {
-			chanceOShipCaptured = 100;
-		}
-		if (chanceOShipCaptured > 90 && chanceOShipCaptured < 99) {
-			shipsRoster.lossOfShip ();
-			crewRoster = crewRoster - 15;
-		}
-		if (chanceOShipCaptured > 80 && chanceOShipCaptured < 91) {
-			shipsRoster.lossOfShip ();
-			crewRoster = crewRoster - 20;
-			player.balance = player.balance - 100;
-		}
-		if (chanceOShipCaptured > 65 && chanceOShipCaptured < 81) {
-			crewRoster = crewRoster - 40;
-			player.balance = player.balance *  0.85;
-		}
-		if (chanceOShipCaptured > 50 && chanceOShipCaptured < 66) {
-		}
-		if (chanceOShipCaptured > 40 && chanceOShipCaptured < 51) {
-		}
-		if (chanceOShipCaptured > 30 && chanceOShipCaptured < 41) {
-		}
-		if (chanceOShipCaptured > 20 && chanceOShipCaptured < 31) {
-		}
-		if (chanceOShipCaptured > 10 && chanceOShipCaptured < 21) {
-		}
-		if (chanceOShipCaptured > 0 && chanceOShipCaptured < 11) {
-		}
-		if (chanceOShipCaptured == 100) {
-			player.balance = player.balance * 0.7;
-		}
+		Debug.Log ("You are probably fucked mate...");	
+		//TODO make this a timed event
+		desiredCut = desiredCut + 5;
 	}
 }
