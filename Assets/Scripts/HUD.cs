@@ -19,9 +19,13 @@ public class HUD : MonoBehaviour {
 
 	public string suffix = "";
 
+	//if true the pirate dashboard will be visible, false not visible
+	public bool isDashboardActive;
+
 	// Use this for initialization
 	void Start () {
 		
+		isDashboardActive = false;
 		player = GetComponent<Player> ();
 
 		//Set the texts to 
@@ -39,7 +43,7 @@ public class HUD : MonoBehaviour {
 	void setHUDTexts (){
 		levelText.text = "level: 0";
 		balanceText.text ="0 Gold";
-		eptText.text ="0.05 Gold/s";
+		eptText.text ="0.00 Gold/s";
 		alertText.text = "";
 	}
 
@@ -96,6 +100,5 @@ public class HUD : MonoBehaviour {
 		   }
 
 	}
-
 
 }

@@ -5,9 +5,9 @@ public class Crew : MonoBehaviour {
 
 	private Player player;
 
-	public int numberOfCrew;
+	//variables relating to the crew
+	public int numberOfCrew = 1;
 	public int Happieness;
-
 	public float desiredCut;
 	public float actualCut;
 
@@ -17,6 +17,7 @@ public class Crew : MonoBehaviour {
 	void Start () {
 		player = GetComponent<Player> ();
 		Happieness = 100;
+
 		//Default cut and desired cut both 10% of player.balance
 		//actual cut can be changed by the player in menus
 		//desired cut may go up after a mutany
